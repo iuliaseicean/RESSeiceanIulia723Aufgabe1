@@ -24,7 +24,8 @@ public class Main {
         // b) Afișează evenimentele casei Stark sortate după dată
         showEreignisseForStufe(events, Stufe.JONIN);
 
-
+        // c) Salvează numărul de evenimente per casă în ergebnis.txt
+        saveEreignisseEventCount(events, "gesamtzahl.txt");
 
     }
 
@@ -80,6 +81,18 @@ public class Main {
         stufeEvents.forEach(System.out::println);
     }
 
+    // Salvează numărul de evenimente per casă în ergebnis.txt
+    public static void saveEreignisseEventCount(List<Event> events, String filePath) {
+        Map<Stufe, Long> eventCount = events.stream()
+                .collect(Collectors.groupingBy(Event::getStufe, TreeMap::new, Collectors.counting()));
+
+        try (Formatter formatter = new Formatter(new File(filePath))) {
+            eventCount.forEach((stufe, count) -> formatter.format("%s#%d%n", stufe, count));
+            System.out.println("Die Ereignisstatistik wurde in '" + filePath + "' gespeichert.");
+        } catch (IOException e) {
+            System.err.println("Fehler beim Speichern der Datei: " + e.getMessage());
+        }
+    }
 
 
 }
