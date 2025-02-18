@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         String filePath = "src/evenimente.tsv"; // Asigură-te că fișierul este în directorul corect
 
         List<Event> events = readTsvFile(filePath);
@@ -13,6 +14,14 @@ public class Main {
             System.out.println("Keine Daten gefunden.");
             return;
         }
+
+        // Afișați opțiuni utilizatorului
+        System.out.println("Introduceti kraftpunktul minim: ");
+        int minKraftpunkt = Integer.parseInt(scanner.nextLine().trim());
+        System.out.println("\nJocuri cu capacitate >= " + minKraftpunkt + ":");
+        displayEventesByMinCapacity(events, minKraftpunkt);
+
+
 
 
     }
@@ -47,6 +56,15 @@ public class Main {
             System.err.println("Fehler beim Verarbeiten der Daten: " + e.getMessage());
         }
         return events;
+    }
+
+    // Metodă pentru a afișa meciurile cu capacitate minimă
+    public static void displayEventesByMinCapacity(List<Event> events, int minKraftpunkt) {
+        for (Event event : events) {
+            if (event.getKraftpunkte() >= minKraftpunkt) {
+                System.out.println(event);
+            }
+        }
     }
 
 
