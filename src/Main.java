@@ -21,6 +21,8 @@ public class Main {
         System.out.println("\nJocuri cu capacitate >= " + minKraftpunkt + ":");
         displayEventesByMinCapacity(events, minKraftpunkt);
 
+        // b) Afișează evenimentele casei Stark sortate după dată
+        showEreignisseForStufe(events, Stufe.JONIN);
 
 
 
@@ -66,6 +68,18 @@ public class Main {
             }
         }
     }
+
+    // Afișează evenimentele unei case sortate după dată
+    public static void showEreignisseForStufe(List<Event> events, Stufe stufe) {
+        List<Event> stufeEvents = events.stream()
+                .filter(event -> event.getStufe() == stufe)
+                .sorted(Comparator.comparing(Event::getDatum))
+                .collect(Collectors.toList());
+
+        System.out.println("Ereignisse des Stufes " + stufe + ":");
+        stufeEvents.forEach(System.out::println);
+    }
+
 
 
 }
