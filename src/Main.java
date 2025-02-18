@@ -1,15 +1,53 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        String filePath = "src/evenimente.tsv"; // Asigură-te că fișierul este în directorul corect
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        List<Event> events = readTsvFile(filePath);
+        if (events.isEmpty()) {
+            System.out.println("Keine Daten gefunden.");
+            return;
         }
+
+
     }
+
+    // Citirea fișierului TSV
+    public static List<Event> readTsvFile(String filePath) {
+        List<Event> events = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            br.readLine(); // Sar peste antet
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split("\t");
+                if (data.length < 6) continue; // Evit linii incomplete
+
+                String charaktername = data[1];
+                Stufe stufe = Stufe.valueOf(data[2].toUpperCase());
+                String beschreibung = data[3];
+                String datumString = data[4];
+                Double kraftpunkte = Double.parseDouble(data[5]);
+
+                // Convertește șirul de caractere în LocalDate
+                LocalDate datum = LocalDate.parse(datumString, formatter);
+
+                // Adaugă obiectul Event în listă
+                events.add(new Event(0, charaktername, stufe, beschreibung, datum.toString(), kraftpunkte));
+            }
+        } catch (IOException e) {
+            System.err.println("Fehler beim Lesen der TSV-Datei: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Fehler beim Verarbeiten der Daten: " + e.getMessage());
+        }
+        return events;
+    }
+
+
 }
